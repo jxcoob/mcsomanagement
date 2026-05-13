@@ -3,8 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const config = require('./config.js');
 const keep_alive = require('./keep_alive.js')
-const bcsoTickets   = require('./handlers/bcsoTicketHandler');
-const bcsoCommands  = require('./commands/bcsoTicketCommands');
+const ticketHandler  = require('./handlers/handler');
+const prefixCommands = require('./prefix');
 
 // ── Create client ──────────────────────────────────────────
 const client = new Client({
@@ -93,6 +93,10 @@ client.on('messageCreate', async message => {
     message.reply('An error occurred.').then(m => setTimeout(() => m.delete().catch(() => {}), 5000));
   }
 });
+
+// Ticket handler
+client.on('interactionCreate', interaction => ticketHandler.handle(interaction, client));
+client.on('messageCreate',     message    => prefixCommands.handle(message));
 
 // ── Login ──────────────────────────────────────────────────
 client.login(config.token);
