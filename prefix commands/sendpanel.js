@@ -99,7 +99,7 @@ module.exports = {
 
     try {
       await targetChannel.send(buildPanelPayload());
-      return message.reply({ content: `✅ Support panel sent to <#${PANEL_CHANNEL_ID}>.` });
+      return message.reply({ content: `Support panel sent to <#${PANEL_CHANNEL_ID}>.` });
     } catch (err) {
       console.error('[BCSO] Failed to send panel:', err);
       return message.reply({ content: 'Failed to send the panel. Check bot permissions in that channel.' });
