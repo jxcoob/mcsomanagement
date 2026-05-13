@@ -3,7 +3,6 @@ const fs = require('fs');
 const path = require('path');
 const config = require('./config.js');
 const keep_alive = require('./keep_alive.js')
-const ticketHandler = require('./handlers/handler');
 
 // ── Create client ──────────────────────────────────────────
 const client = new Client({
@@ -72,13 +71,6 @@ client.on('interactionCreate', async interaction => {
       else await interaction.reply(msg).catch(() => {});
     }
     return;
-  }
-
-  // ── Ticket interaction handler ─────────────────────────
-  try {
-    await ticketHandler.handle(interaction, client);
-  } catch (err) {
-    console.error('[Error] Ticket interaction:', err);
   }
 });
 
