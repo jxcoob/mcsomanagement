@@ -1,6 +1,6 @@
 /**
  * handlers/bcsoTicketHandler.js
- * Briarfield County Sheriff's Office ticket system.
+ * Missoula County Sheriff's Office ticket system.
  * Ticket types: general, ia_other, ia_deputy
  */
 
