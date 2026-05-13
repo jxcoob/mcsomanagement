@@ -2,6 +2,7 @@ const { Client, GatewayIntentBits, Collection, REST, Routes } = require('discord
 const fs = require('fs');
 const path = require('path');
 const config = require('./config.js');
+const keep_alive = require('./keep_alive.js')
 
 // ── Create client ──────────────────────────────────────────
 const client = new Client({
