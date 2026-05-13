@@ -94,9 +94,6 @@ client.on('messageCreate', async message => {
   }
 });
 
-// Ticket handler
-client.on('interactionCreate', interaction => ticketHandler.handle(interaction, client));
-client.on('messageCreate',     message    => prefixCommands.handle(message));
 
 // ── Login ──────────────────────────────────────────────────
 client.login(config.token);
