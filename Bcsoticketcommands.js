@@ -3,11 +3,11 @@
  * Prefix commands for the BCSO ticket system.
  *
  * Commands:
- *   !sendpanel   — Posts the support panel into the configured channel.
- *   !adduser     — Adds a user to the current ticket channel.
- *   !removeuser  — Removes a user from the current ticket channel.
- *   !rename      — Renames the current ticket channel.
- *   !closeticket — Closes the current ticket (staff only).
+ *   -sendpanel   — Posts the support panel into the configured channel.
+ *   -adduser     — Adds a user to the current ticket channel.
+ *   -removeuser  — Removes a user from the current ticket channel.
+ *   -rename      — Renames the current ticket channel.
+ *   -closeticket — Closes the current ticket (staff only).
  *
  * All commands restricted to role: 1498131737623007374
  * Panel is sent to channel: 1498131740697301196
@@ -119,7 +119,7 @@ async function cmdSendPanel(message) {
 
   try {
     await targetChannel.send(buildPanelPayload());
-    return message.reply({ content: `✅ Support panel sent to <#${PANEL_CHANNEL_ID}>.` });
+    return message.reply({ content: `Support panel sent to <#${PANEL_CHANNEL_ID}>.` });
   } catch (err) {
     console.error('[BCSO] Failed to send panel:', err);
     return message.reply({ content: 'Failed to send the panel. Check bot permissions in that channel.' });
@@ -206,7 +206,7 @@ async function cmdRename(message, args) {
 
   try {
     await channel.setName(newName);
-    return message.reply({ content: `✅ Channel renamed to **${newName}**.` });
+    return message.reply({ content: `Channel renamed to **${newName}**.` });
   } catch (err) {
     console.error('[BCSO] Failed to rename channel:', err);
     return message.reply({ content: 'Failed to rename the channel.' });
