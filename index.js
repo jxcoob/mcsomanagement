@@ -3,6 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const config = require('./config.js');
 const keep_alive = require('./keep_alive.js')
+const bcsoTickets   = require('./handlers/bcsoTicketHandler');
+const bcsoCommands  = require('./commands/bcsoTicketCommands');
 
 // ── Create client ──────────────────────────────────────────
 const client = new Client({
