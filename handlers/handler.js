@@ -450,7 +450,7 @@ async function handleIADeputyModalSubmit(interaction) {
   const deputy       = interaction.fields.getTextInputValue('deputy');
   const reportReason = interaction.fields.getTextInputValue('report_reason');
   const proof        = interaction.fields.getTextInputValue('proof');
-  const channelName  = `deputy-report-${user.username.toLowerCase().replace(/[^a-z0-9-]/g, '')}`;
+  const channelName  = `ia-report-${user.username.toLowerCase().replace(/[^a-z0-9-]/g, '')}`;
 
   let channel;
   try {
