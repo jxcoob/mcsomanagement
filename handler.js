@@ -52,15 +52,8 @@ const TRANSCRIPT_LOG   = config.channels?.bcsoTranscriptLog ?? config.channels?.
 
 // Roles allowed to act on each ticket type
 const ROLES = {
-  general: [
-    '1498131737623007374',
-    '1498131737551831176',
-    '1498131737551831172',
-  ],
-  ia: [
-    '1498131737623007374',
-    '1498131737551831176',
-  ],
+  general:   config.roles?.bcsoGeneralSupport  ?? [],   // fill in config or hardcode below
+  ia:        config.roles?.bcsoIASupport        ?? [],
 };
 
 // Escalation ping roles
