@@ -3,8 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const config = require('./config.js');
 const keep_alive = require('./keep_alive.js')
-const ticketHandler  = require('./handlers/handler');
-const prefixCommands = require('./prefix');
+const ticketHandler = require('./handlers/handler');
 
 // ── Create client ──────────────────────────────────────────
 const client = new Client({
@@ -55,22 +54,31 @@ async function registerCommands() {
 // ── Ready ──────────────────────────────────────────────────
 client.once('ready', async () => {
   console.log(`\nOnline as ${client.user.tag}`);
-  console.log(`Missoula County Sheriffs Office`);
+  console.log(`Missoula County Sheriff's Office`);
   await registerCommands();
 });
 
 // ── Slash command handler ──────────────────────────────────
 client.on('interactionCreate', async interaction => {
-  if (!interaction.isChatInputCommand()) return;
-  const command = client.slashCommands.get(interaction.commandName);
-  if (!command) return;
+  if (interaction.isChatInputCommand()) {
+    const command = client.slashCommands.get(interaction.commandName);
+    if (!command) return;
+    try {
+      await command.execute(interaction);
+    } catch (err) {
+      console.error(`[Error] /${interaction.commandName}:`, err);
+      const msg = { content: 'An error occurred.', ephemeral: true };
+      if (interaction.replied || interaction.deferred) await interaction.followUp(msg).catch(() => {});
+      else await interaction.reply(msg).catch(() => {});
+    }
+    return;
+  }
+
+  // ── Ticket interaction handler ─────────────────────────
   try {
-    await command.execute(interaction);
+    await ticketHandler.handle(interaction, client);
   } catch (err) {
-    console.error(`[Error] /${interaction.commandName}:`, err);
-    const msg = { content: 'An error occurred.', ephemeral: true };
-    if (interaction.replied || interaction.deferred) await interaction.followUp(msg).catch(() => {});
-    else await interaction.reply(msg).catch(() => {});
+    console.error('[Error] Ticket interaction:', err);
   }
 });
 
@@ -93,7 +101,6 @@ client.on('messageCreate', async message => {
     message.reply('An error occurred.').then(m => setTimeout(() => m.delete().catch(() => {}), 5000));
   }
 });
-
 
 // ── Login ──────────────────────────────────────────────────
 client.login(config.token);
