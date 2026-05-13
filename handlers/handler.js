@@ -1,5 +1,5 @@
 /**
- * handlers/bcsoTicketHandler.js
+ * handlers/mcsoTicketHandler.js
  * Missoula County Sheriff's Office ticket system.
  * Ticket types: general, ia_other, ia_deputy
  */
@@ -28,27 +28,27 @@ const IDS = {
   // Select menu on the panel
   SUPPORT_SELECT:      'p_301821495703769089',
   // IA type select (ephemeral follow-up)
-  IA_TYPE_SELECT:      'bcso_ia_type_select',
+  IA_TYPE_SELECT:      'mcso_ia_type_select',
 
   // Modals
-  GENERAL_MODAL:       'bcso_modal_general',
-  IA_OTHER_MODAL:      'bcso_modal_ia_other',
-  IA_DEPUTY_MODAL:     'bcso_modal_ia_deputy',
-  CLOSE_REASON_MODAL:  'bcso_close_reason_modal',
+  GENERAL_MODAL:       'mcso_modal_general',
+  IA_OTHER_MODAL:      'mcso_modal_ia_other',
+  IA_DEPUTY_MODAL:     'mcso_modal_ia_deputy',
+  CLOSE_REASON_MODAL:  'mcso_close_reason_modal',
 
   // Ticket action buttons (shared across all ticket types)
   CLAIM_BTN:           'p_301825461015547940',
-  UNCLAIM_BTN:         'bcso_btn_unclaim',
+  UNCLAIM_BTN:         'mcso_btn_unclaim',
   CLOSE_BTN:           'p_301825499246628901',
-  CLOSE_CONFIRM_BTN:   'bcso_close_confirm',
-  CLOSE_CANCEL_BTN:    'bcso_close_cancel',
+  CLOSE_CONFIRM_BTN:   'mcso_close_confirm',
+  CLOSE_CANCEL_BTN:    'mcso_close_cancel',
   ESCALATE_BTN:        'p_301825548080910374',
-  ESCALATE_USED_BTN:   'bcso_btn_escalate_used',
+  ESCALATE_USED_BTN:   'mcso_btn_escalate_used',
 };
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 const TICKET_CATEGORY  = '1498131739325890742';
-const TRANSCRIPT_LOG   = config.channels?.bcsoTranscriptLog ?? config.channels?.transcriptLog;
+const TRANSCRIPT_LOG   = config.channels?.mcsoTranscriptLog ?? config.channels?.transcriptLog;
 
 // Roles allowed to act on each ticket type
 const ROLES = {
@@ -68,6 +68,12 @@ const ESCALATE_ROLE = {
   general:   '1498131737551831176',
   ia_other:  '1498131737623007374',
   ia_deputy: '1498131737623007374',
+};
+
+// Ping roles for ticket open messages
+const OPEN_PING_ROLE = {
+  general: '1498131737551831171',
+  ia:      '1498131737551831176',
 };
 
 // ─── Image block (shared banner) ─────────────────────────────────────────────
@@ -103,10 +109,10 @@ function actionRow() {
 // ─── Ticket message builders ──────────────────────────────────────────────────
 function buildGeneralTicketMessage(user, reason) {
   return {
+    content:         `<@&${OPEN_PING_ROLE.general}>`,
+    allowedMentions: { roles: [OPEN_PING_ROLE.general] },
     flags:           1 << 15,
-    allowedMentions: { parse: ['everyone', 'roles', 'users'] },
     components: [
-      { type: 10, content: '@everyone' },
       {
         id:           1,
         type:         17,
@@ -118,7 +124,7 @@ function buildGeneralTicketMessage(user, reason) {
           {
             id:      4,
             type:    10,
-            content: `## General Support Ticket\n\nHello ${user}, welcome to your general support ticket.\n\n<:Information:1504227484265091102> We're happy to assist you. To help us respond, please elaborate down below on any additional information you may have on your reason for opening a ticket so our support team can assist you to the best they can.\n\n**Ticket Reason:** \`${reason}\`\n\n-# Please be patient whilst waiting for someone to assist you.`,
+            content: `## General Support Ticket\n\nHello ${user}, welcome to your general support ticket.\n\nWe're happy to assist you. To help us respond, please elaborate down below on any additional information you may have on your reason for opening a ticket so our support team can assist you to the best they can.\n\n**Ticket Reason:** \`${reason}\`\n\n-# Please be patient whilst waiting for someone to assist you.`,
           },
           { id: 5, type: 14, divider: true,  spacing: 2 },
           actionRow(),
@@ -130,10 +136,10 @@ function buildGeneralTicketMessage(user, reason) {
 
 function buildIAOtherTicketMessage(user, reason) {
   return {
+    content:         `<@&${OPEN_PING_ROLE.ia}>`,
+    allowedMentions: { roles: [OPEN_PING_ROLE.ia] },
     flags:           1 << 15,
-    allowedMentions: { parse: ['everyone', 'roles', 'users'] },
     components: [
-      { type: 10, content: '@everyone' },
       {
         id:           1,
         type:         17,
@@ -145,7 +151,7 @@ function buildIAOtherTicketMessage(user, reason) {
           {
             id:      4,
             type:    10,
-            content: `## Internal Affairs Support Ticket\n\nHello ${user}, welcome to your internal affairs support ticket.\n\n<:Information:1504227484265091102> We're happy to assist you. To help us respond, please elaborate down below on any additional information you may have on your reason for opening a ticket so our support team can assist you to the best they can.\n\n**Ticket Reason:** \`${reason}\`\n\n-# Please be patient whilst waiting for someone to assist you.`,
+            content: `## Internal Affairs Support Ticket\n\nHello ${user}, welcome to your internal affairs support ticket.\n\nWe're happy to assist you. To help us respond, please elaborate down below on any additional information you may have on your reason for opening a ticket so our support team can assist you to the best they can.\n\n**Ticket Reason:** \`${reason}\`\n\n-# Please be patient whilst waiting for someone to assist you.`,
           },
           { id: 5, type: 14, divider: true,  spacing: 2 },
           actionRow(),
@@ -157,10 +163,10 @@ function buildIAOtherTicketMessage(user, reason) {
 
 function buildIADeputyTicketMessage(user, deputy, reportReason, proof) {
   return {
+    content:         `<@&${OPEN_PING_ROLE.ia}>`,
+    allowedMentions: { roles: [OPEN_PING_ROLE.ia] },
     flags:           1 << 15,
-    allowedMentions: { parse: ['everyone', 'roles', 'users'] },
     components: [
-      { type: 10, content: '@everyone' },
       {
         id:           1,
         type:         17,
@@ -172,7 +178,7 @@ function buildIADeputyTicketMessage(user, deputy, reportReason, proof) {
           {
             id:      4,
             type:    10,
-            content: `## Internal Affairs - Deputy Report\n\nHello ${user}, welcome to your internal affairs deputy report ticket.\n\n<:Information:1504227484265091102> We're happy to assist you. To help us respond, please elaborate down below on any additional information you may have on your reason for opening a ticket so our support team can assist you to the best they can.\n\n**Deputy:**\n\`\`\`${deputy}\`\`\`\n**Reason for report:**\n\`\`\`${reportReason}\`\`\`\n**Proof:**\n\`\`\`${proof}\`\`\`\n-# Please be patient whilst waiting for someone to assist you.`,
+            content: `## Internal Affairs - Deputy Report\n\nHello ${user}, welcome to your internal affairs deputy report ticket.\n\nWe're happy to assist you. To help us respond, please elaborate down below on any additional information you may have on your reason for opening a ticket so our support team can assist you to the best they can.\n\n**Deputy:**\n\`\`\`${deputy}\`\`\`\n**Reason for report:**\n\`\`\`${reportReason}\`\`\`\n**Proof:**\n\`\`\`${proof}\`\`\`\n-# Please be patient whilst waiting for someone to assist you.`,
           },
           { id: 5, type: 14, divider: true,  spacing: 2 },
           actionRow(),
@@ -261,7 +267,7 @@ function cloneComponents(msg) {
 async function handleSupportSelect(interaction) {
   const value = interaction.values[0];
 
-  // General support → straight to modal
+  // General support -> straight to modal
   if (value === 'TijUetP4eh') {
     return interaction.showModal(
       new ModalBuilder()
@@ -280,7 +286,7 @@ async function handleSupportSelect(interaction) {
     );
   }
 
-  // IA support → pick sub-type first
+  // IA support -> pick sub-type first
   if (value === 'LrsOU5WLvy') {
     return interaction.reply({
       ephemeral:  true,
@@ -380,7 +386,7 @@ async function handleGeneralModalSubmit(interaction) {
       permissionOverwrites: buildPermissionOverwrites(guild, user.id, 'general'),
     });
   } catch (err) {
-    console.error('[BCSO TICKET] Failed to create general channel:', err);
+    console.error('[MCSO TICKET] Failed to create general channel:', err);
     return interaction.editReply({ content: 'Failed to create ticket channel. Please contact an admin.' });
   }
 
@@ -419,7 +425,7 @@ async function handleIAOtherModalSubmit(interaction) {
       permissionOverwrites: buildPermissionOverwrites(guild, user.id, 'ia'),
     });
   } catch (err) {
-    console.error('[BCSO TICKET] Failed to create IA Other channel:', err);
+    console.error('[MCSO TICKET] Failed to create IA Other channel:', err);
     return interaction.editReply({ content: 'Failed to create ticket channel. Please contact an admin.' });
   }
 
@@ -460,7 +466,7 @@ async function handleIADeputyModalSubmit(interaction) {
       permissionOverwrites: buildPermissionOverwrites(guild, user.id, 'ia'),
     });
   } catch (err) {
-    console.error('[BCSO TICKET] Failed to create IA Deputy channel:', err);
+    console.error('[MCSO TICKET] Failed to create IA Deputy channel:', err);
     return interaction.editReply({ content: 'Failed to create ticket channel. Please contact an admin.' });
   }
 
@@ -616,7 +622,7 @@ async function handleCloseReasonModal(interaction, client) {
   try {
     transcriptBuffer = await generateTranscript(channel);
   } catch (err) {
-    console.error('[BCSO TICKET] Failed to generate transcript:', err);
+    console.error('[MCSO TICKET] Failed to generate transcript:', err);
     transcriptBuffer = Buffer.from('<html><body>Transcript generation failed.</body></html>', 'utf8');
   }
 
@@ -627,8 +633,8 @@ async function handleCloseReasonModal(interaction, client) {
   const attachment = new AttachmentBuilder(zipBuffer, { name: `${htmlName}.zip` });
 
   const typeLabel =
-    ticket.type === 'general'    ? 'General Support'            :
-    ticket.type === 'ia_other'   ? 'Internal Affairs - Other'   :
+    ticket.type === 'general'    ? 'General Support'                 :
+    ticket.type === 'ia_other'   ? 'Internal Affairs - Other'        :
     ticket.type === 'ia_deputy'  ? 'Internal Affairs - Deputy Report' :
                                    'Ticket';
 
